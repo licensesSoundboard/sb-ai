@@ -1,0 +1,17 @@
+# Node
+node_modules
+**/dist/
+**/generated/prisma
+
+# Keep environment variables out of version control
+backend-ts/.env
+backend-py/.env
+
+# Python
+**/__pycache__/
+**/venv/
+*.pyc
+.venv/
+
+# macOS
+.DS_Store

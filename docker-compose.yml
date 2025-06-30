@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  backend-ts:
+    build: ./backend-ts
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./backend-ts/.env
+    volumes:
+      - ./backend-ts:/app
+
+  backend-py:
+    build: ./backend-py
+    ports:
+      - "5001:5000"
+    volumes:
+      - ./backend-py:/app
