@@ -10,7 +10,7 @@ app.use(express.json());
 app.use('/api', routes);
 
 app.get('/', (_req, res) => {
-  res.send('Express backend is running');
+  res.send('Express backend v2 is running');
 });
 
 app.listen(PORT, () => {

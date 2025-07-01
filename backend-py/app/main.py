@@ -8,4 +8,4 @@ app.include_router(api_router, prefix="/api")
 
 @app.get("/")
 def root():
-    return {"message": "FastAPI backend is running v3"}
+    return {"message": "FastAPI backend is running v4"}
