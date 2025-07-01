@@ -1,4 +1,4 @@
-name: Deploy backend-ts to AWS ECR
+name: Deploy backend-ts to AWS ECS
 
 on:
   push:
@@ -6,10 +6,11 @@ on:
 
 jobs:
   deploy:
+    name: Deploy to ECS
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Configure AWS credentials
@@ -23,8 +24,23 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build and tag Docker image
+      - name: Build, tag, and push image to Amazon ECR
         run: |
-          IMAGE_URI=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY_TS }}:latest
+          IMAGE_URI=${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_TS }}:latest
           docker build -t $IMAGE_URI ./backend-ts
           docker push $IMAGE_URI
+
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ecs-task-defs/backend-ts-task-def.json
+          container-name: backend-ts
+          image: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_TS }}:latest
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          service: sb-ai-backend-ts-service
+          cluster: sb-ai-cluster
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
