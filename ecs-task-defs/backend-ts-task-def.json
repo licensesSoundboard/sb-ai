@@ -15,6 +15,24 @@
         }
       ],
       "essential": true,
+      "environment": [
+        {
+          "name": "DATABASE_URL",
+          "value": "PLACEHOLDER_DATABASE_URL"
+        },
+        {
+          "name": "DIRECT_URL",
+          "value": "PLACEHOLDER_DIRECT_URL"
+        },
+        {
+          "name": "BACKEND_PY_URL",
+          "value": "PLACEHOLDER_BACKEND_PY_URL"
+        },
+        {
+          "name": "NODE_ENV",
+          "value": "production"
+        }
+      ],
       "environmentFiles": [],
       "mountPoints": [],
       "volumesFrom": [],

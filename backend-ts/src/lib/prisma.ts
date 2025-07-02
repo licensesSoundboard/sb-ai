@@ -6,10 +6,17 @@ import { PrismaClient } from '@prisma/client';
  * @returns {PrismaClient} - A new PrismaClient instance.
  */
 const prismaClientSingleton = () => {
+  const databaseUrl = process.env.DATABASE_URL;
+
+  if (!databaseUrl) {
+    console.warn('DATABASE_URL not provided');
+    throw new Error('DATABASE_URL environment variable is required');
+  }
+
   return new PrismaClient({
     datasources: {
       db: {
-        url: process.env.DATABASE_URL,
+        url: databaseUrl,
       },
     },
     log: ['error', 'warn'],
@@ -17,7 +24,7 @@ const prismaClientSingleton = () => {
   });
 };
 
-// Extend globalThis to include a prismaGlobal property for better typing
+// Extended globalThis to include a prismaGlobal property for better typing
 declare const globalThis: {
   prismaGlobal: ReturnType<typeof prismaClientSingleton>;
 } & typeof global;
@@ -27,12 +34,23 @@ declare const globalThis: {
  * to avoid creating new instances on each request.
  *
  * @constant
- * @type {PrismaClient}
+ * @type {PrismaClient | null}
  */
-const prisma = globalThis.prismaGlobal ?? prismaClientSingleton();
+let prisma: PrismaClient | null = null;
+
+try {
+  prisma = globalThis.prismaGlobal ?? prismaClientSingleton();
+
+  // If in development, assign the global prisma instance for reuse
+  if (process.env.NODE_ENV !== 'production') {
+    globalThis.prismaGlobal = prisma;
+  }
+} catch (error) {
+  console.error(
+    'Failed to initialize Prisma:',
+    error instanceof Error ? error.message : 'Unknown error',
+  );
+  prisma = null;
+}
 
 export default prisma;
-
-// If in development, assign the global prisma instance for reuse
-if (process.env.NEXT_PUBLIC_ENVIRONMENT !== 'production')
-  globalThis.prismaGlobal = prisma;
