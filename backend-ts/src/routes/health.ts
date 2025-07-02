@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import prisma from '@/lib/prisma';
+import { requireDatabase } from '@/utils/database';
 
 const router = Router();
 
@@ -15,6 +15,7 @@ router.get('/', (req: Request, res: Response) => {
 // Database health check
 router.get('/db', async (req: Request, res: Response) => {
   try {
+    const prisma = requireDatabase();
     await prisma.$queryRaw`SELECT 1`;
     res.json({
       status: 'healthy',

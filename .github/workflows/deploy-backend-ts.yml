@@ -30,6 +30,12 @@ jobs:
           docker build -t $IMAGE_URI ./backend-ts
           docker push $IMAGE_URI
 
+      - name: Replace placeholders in task definition
+        run: |
+          sed -i 's|PLACEHOLDER_DATABASE_URL|${{ secrets.DATABASE_URL }}|g' ecs-task-defs/backend-ts-task-def.json
+          sed -i 's|PLACEHOLDER_DIRECT_URL|${{ secrets.DIRECT_URL }}|g' ecs-task-defs/backend-ts-task-def.json
+          sed -i 's|PLACEHOLDER_BACKEND_PY_URL|${{ secrets.BACKEND_PY_URL }}|g' ecs-task-defs/backend-ts-task-def.json
+
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
