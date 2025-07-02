@@ -15,16 +15,6 @@
         }
       ],
       "essential": true,
-      "environment": [
-        {
-          "name": "DIRECT_URL",
-          "value": "postgresql://postgres.nhczxdggxcajhrboshae:6OvTFjGsJjdByFcF@aws-0-us-east-2.pooler.supabase.com:5432/postgres"
-        },
-        {
-          "name": "DATABASE_URL",
-          "value": "postgresql://postgres.nhczxdggxcajhrboshae:6OvTFjGsJjdByFcF@aws-0-us-east-2.pooler.supabase.com:6543/postgres?pgbouncer=true"
-        }
-      ],
       "environmentFiles": [],
       "mountPoints": [],
       "volumesFrom": [],
