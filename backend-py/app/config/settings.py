@@ -1,6 +1,5 @@
 # app/config/settings.py
 from pydantic import BaseSettings  # Use this instead of pydantic_settings
-from typing import Optional
 
 class Settings(BaseSettings):
     # Environment
