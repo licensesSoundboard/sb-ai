@@ -1,17 +1,14 @@
-version: "3.8"
 services:
   backend-ts:
     build: ./backend-ts
     ports:
-      - "4000:4000"
-    env_file:
-      - ./backend-ts/.env
-    volumes:
-      - ./backend-ts:/app
+      - '4000:4000'
+    environment:
+      - BACKEND_PY_URL=http://backend-py:5000
 
   backend-py:
     build: ./backend-py
     ports:
-      - "5001:5000"
-    volumes:
-      - ./backend-py:/app
+      - '5001:5000'
+    environment:
+      - TS_SERVICE_URL=http://backend-ts:4000

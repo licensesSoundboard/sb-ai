@@ -1,11 +1,14 @@
 from fastapi import FastAPI
-from app.api.routes import router as api_router
+from app.api.routes import api_router
 
-app = FastAPI()
 
-# Mount your API routes
-app.include_router(api_router, prefix="/api")
 
-@app.get("/")
-def root():
-    return {"message": "FastAPI backend is running v4"}
+app = FastAPI(
+    title="AI Framework Backend",
+    description="Python AI processing service",
+    version="1.0.0"
+)
+
+# Include API routes
+app.include_router(api_router)
+
