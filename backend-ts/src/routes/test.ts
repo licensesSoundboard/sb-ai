@@ -67,4 +67,41 @@ router.get(
   },
 );
 
+// Debug Python connection in aws
+router.get('/debug/python', async (req: Request, res: Response) => {
+  const pythonUrl = process.env.BACKEND_PY_URL;
+
+  try {
+    console.log(`🔍 Attempting to connect to: ${pythonUrl}/test/`);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+    const response = await fetch(`${pythonUrl}/test/`, {
+      method: 'GET',
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId); // Clear timeout if request succeeds
+    const data = await response.json();
+
+    res.json({
+      success: true,
+      python_url: pythonUrl,
+      python_response: data,
+      connection_method: 'internal_service_name',
+    });
+  } catch (error: any) {
+    console.error('❌ Python connection error:', error);
+
+    res.json({
+      success: false,
+      python_url: pythonUrl,
+      error_message: error.message,
+      error_code: error.code || 'UNKNOWN',
+      dns_resolution: 'failed',
+      suggestion: 'Check ECS service discovery or use private IP',
+    });
+  }
+});
+
 export default router;
